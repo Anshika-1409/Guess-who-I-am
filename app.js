@@ -58,14 +58,16 @@ function showError(error) {
 }
 
 function getApiBaseUrl() {
-  const isJavaServer =
-    window.location.hostname === "127.0.0.1" && window.location.port === "4173";
+  const localHosts = new Set(["127.0.0.1", "localhost"]);
+  const isFilePage = window.location.protocol === "file:";
+  const isLocalPreview =
+    localHosts.has(window.location.hostname) && window.location.port !== "4173";
 
-  if (isJavaServer) {
-    return "";
+  if (isFilePage || isLocalPreview) {
+    return "http://127.0.0.1:4173";
   }
 
-  return "http://127.0.0.1:4173";
+  return "";
 }
 
 function updateStats(stats) {
