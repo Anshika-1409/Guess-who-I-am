@@ -22,6 +22,7 @@ public final class GameEngineTest {
         everyPersonHasEnoughTraits();
 
         guessesKnownPeople();
+        solvesFocusedGroupsQuickly();
 
         System.out.println("All Java backend tests passed.");
     }
@@ -153,6 +154,56 @@ public final class GameEngineTest {
         }
 
         return false;
+    }
+
+    private static void solvesFocusedGroupsQuickly() {
+        assertSolvedWithin("CarryMinati", 15);
+        assertSolvedWithin("Triggered Insaan", 15);
+        assertSolvedWithin("Bhuvan Bam", 15);
+        assertSolvedWithin("Ashish Chanchlani", 15);
+        assertSolvedWithin("Tech Burner", 15);
+        assertSolvedWithin("Mrwhosetheboss", 15);
+        assertSolvedWithin("Shah Rukh Khan", 16);
+        assertSolvedWithin("Ranbir Kapoor", 16);
+        assertSolvedWithin("Alia Bhatt", 16);
+        assertSolvedWithin("Allu Arjun", 16);
+        assertSolvedWithin("Prabhas", 16);
+        assertSolvedWithin("Yash", 16);
+    }
+
+    private static void assertSolvedWithin(String targetName, int maxQuestions) {
+        int questionCount = questionsNeededToSolve(targetName);
+        require(
+            questionCount <= maxQuestions,
+            targetName + " needed " + questionCount
+                + " questions; expected at most " + maxQuestions
+        );
+    }
+
+    private static int questionsNeededToSolve(String targetName) {
+        GameEngine engine = new GameEngine();
+        GameSession session = new GameSession();
+        GameData.Person target = person(targetName);
+
+        Map<String, Object> response = engine.startRound(session);
+
+        for (int turn = 0; turn < 80; turn++) {
+            if (response.get("mode").equals("guess")) {
+                if (targetName.equals(session.pendingGuess)) {
+                    return session.asked.size();
+                }
+
+                response = engine.resolveGuess(session, "wrong");
+                continue;
+            }
+
+            response = engine.answerQuestion(
+                session,
+                answerFor(target, session.currentQuestion)
+            );
+        }
+
+        throw new AssertionError("Engine failed to identify " + targetName);
     }
 
     private static String answerFor(

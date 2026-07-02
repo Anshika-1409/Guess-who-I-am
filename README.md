@@ -13,7 +13,7 @@ not require an LLM or any external API.
 - Incorrect guesses are eliminated and the questioning continues.
 - Very unlikely candidates are pruned so question selection stays fast.
 
-The starter knowledge base includes 100 personalities and a 205-question catalog
+The starter knowledge base includes 100 personalities and a 219-question catalog
 covering music, film, sports, business, politics, historical figures, internet
 creators, anime, gaming, K-pop, franchises, awards, appearance traits, and
 fictional characters.
